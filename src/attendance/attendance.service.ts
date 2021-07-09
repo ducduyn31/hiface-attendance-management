@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { getManager } from 'typeorm';
 
 @Injectable()
 export class AttendanceService {
   getAttendance(from: number, to: number, studentId: string) {
-    return /*getManager().query(*/`
+    return /*getManager().query(*/ `
       SELECT 
           s.real_name,
           s.job_number AS student_id,
@@ -23,7 +22,7 @@ export class AttendanceService {
                   AND e.timestamp < ${to}
                   AND e.subject_id IS NOT NULL) t ON t.subject_id = s.id
       WHERE
-          s.id = 10128
+          s.id = ${studentId}
       GROUP BY s.id
       ORDER BY s.id;
     `;
