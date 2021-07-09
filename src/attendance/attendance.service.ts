@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { getManager } from 'typeorm';
+import { Observable } from 'rxjs';
+import { fromPromise } from 'rxjs/internal-compatibility';
 
 @Injectable()
 export class AttendanceService {
-  getAttendance(from: number, to: number, studentId: string) {
-    return /*getManager().query(*/ `
+  getAttendance(from: number, to: number, studentId: string): Observable<any> {
+    return fromPromise(
+      getManager()
+        .query(
+          `
       SELECT 
           s.real_name,
           s.job_number AS student_id,
@@ -25,6 +31,14 @@ export class AttendanceService {
           s.id = ${studentId}
       GROUP BY s.id
       ORDER BY s.id;
-    `;
+    `,
+          [
+            {
+              studentId,
+            },
+          ],
+        )
+        .then((result) => (!!result ? result[0] : {})),
+    );
   }
 }
