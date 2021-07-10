@@ -28,15 +28,11 @@ export class AttendanceService {
                   AND e.timestamp < ${to}
                   AND e.subject_id IS NOT NULL) t ON t.subject_id = s.id
       WHERE
-          s.id = ${studentId}
+          s.id = ?
       GROUP BY s.id
       ORDER BY s.id;
     `,
-          [
-            {
-              studentId,
-            },
-          ],
+          [studentId],
         )
         .then((result) => (!!result ? result[0] : {})),
     );

@@ -1,5 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { getManager } from 'typeorm';
+import { Controller, Get, Query } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import * as moment from 'moment';
 import { forkJoin } from 'rxjs';

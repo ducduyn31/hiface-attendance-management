@@ -16,7 +16,6 @@ import { AttendanceService } from './attendance.service';
           username: 'root',
           password: 'root',
           database: 'koala_online',
-          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
           synchronize: false,
         }),
     },
