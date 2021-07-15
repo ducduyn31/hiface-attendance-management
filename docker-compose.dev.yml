@@ -12,13 +12,13 @@ services:
   zookeeper:
     image: bitnami/zookeeper:latest
     ports:
-      - '2181:2181'
+      - 2181:2181
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   kafka:
     image: bitnami/kafka:latest
     ports:
-      - '9093:9093'
+      - 9093:9093
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9093
