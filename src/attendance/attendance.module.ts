@@ -12,7 +12,7 @@ import { AttendanceService } from './attendance.service';
         await createConnection({
           type: 'mysql',
           host: 'localhost',
-          port: 3307,
+          port: 3306,
           username: 'root',
           password: 'root',
           database: 'koala_online',
