@@ -1,24 +1,15 @@
 version: '2'
 services:
-#  mysql:
-#    image: mysql
-#    command: --default-authentication-plugin=mysql_native_password
-#    volumes:
-#      - './data/mysql:/var/lib/mysql'
-#    ports:
-#      - 3307:3306
-#    environment:
-#      MYSQL_ROOT_PASSWORD: root
   zookeeper:
     image: bitnami/zookeeper:latest
     ports:
-      - '2181:2181'
+      - 2181:2181
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   kafka:
     image: bitnami/kafka:latest
     ports:
-      - '9093:9093'
+      - 9093:9093
     environment:
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9093
@@ -33,4 +24,37 @@ services:
       - ZK_HOSTS=zookeeper:2181
     ports:
     - 9000:9000
+  elasticsearch:
+    image: imcvampire/elasticsearch-vietnamese:latest
+    volumes:
+      - es-data:/bitnami/elasticsearch/data
+    ports:
+    - 9200:9200
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      discovery.type: single-node
+    networks:
+      - es-net
+  kibana:
+    image: kibana:7.12.1
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+    - 5601:5601
+    networks:
+      - es-net
+    depends_on:
+      - elasticsearch
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+volumes:
+  es-data:
+    driver: local
+networks:
+  es-net:
+    driver: bridge
+
 
