@@ -1,0 +1,36 @@
+{
+  "settings": {
+    "index": {
+      "analysis": {
+        "analyzer": {
+          "vi_analyzer": {
+            "tokenizer": "vi_tokenizer",
+            "char_filter":  [ "html_strip" ],
+            "filter": [
+              "icu_folding"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "name": {
+        "type": "text",
+        "analyzer": "vi_analyzer"
+      },
+      "class" : {
+        "type" : "text",
+        "analyzer" : "vi_analyzer"
+      },
+      "dob" : {
+        "type" : "date"
+      },
+      "school" : {
+        "type" : "text",
+        "analyzer" : "vi_analyzer"
+      }
+    }
+  }
+}

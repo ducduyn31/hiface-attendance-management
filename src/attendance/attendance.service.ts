@@ -13,7 +13,6 @@ export class AttendanceService {
       SELECT 
           s.real_name,
           s.job_number AS student_id,
-          s.remark,
           MIN(t.timestamp) AS check_in,
           MAX(t.timestamp) AS check_out
       FROM

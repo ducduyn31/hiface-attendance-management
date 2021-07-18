@@ -1,13 +1,28 @@
-import { CacheModule, Module } from '@nestjs/common';
-import { StudentController } from './student.controller';
-import { StudentService } from './student.service';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as redisStore from 'cache-manager-redis-store';
+import { TaskService } from './task.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskProcessor } from './task.processor';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { createConnection } from 'typeorm';
 
 @Module({
   imports: [
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: +configService.get('REDIS_PORT'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    BullModule.registerQueue({
+      name: 'tasks',
+    }),
+    ScheduleModule.forRoot(),
     ElasticsearchModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -15,19 +30,8 @@ import { createConnection } from 'typeorm';
       }),
       inject: [ConfigService],
     }),
-    CacheModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        store: redisStore,
-        host: configService.get('REDIS_HOST'),
-        port: configService.get('REDIS_PORT'),
-      }),
-      inject: [ConfigService],
-    }),
   ],
-  controllers: [StudentController],
   providers: [
-    StudentService,
     {
       provide: 'DATABASE_CONNECTION',
       useFactory: async () =>
@@ -41,6 +45,8 @@ import { createConnection } from 'typeorm';
           synchronize: false,
         }),
     },
+    TaskService,
+    TaskProcessor,
   ],
 })
-export class StudentModule {}
+export class TaskModule {}

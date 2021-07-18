@@ -14,7 +14,7 @@ export class EventService {
         extra_id as student_code,
         real_name as name
         FROM subject
-        WHERE id = ?
+        WHERE extra_id = ?
         `,
           [subjectId],
         )

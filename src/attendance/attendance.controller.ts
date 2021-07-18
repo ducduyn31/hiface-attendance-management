@@ -28,15 +28,15 @@ export class AttendanceController {
     );
 
     return forkJoin(
-      ...daysOfWeeks.map((start) =>
+      ...daysOfWeeks.map((start, index) =>
         this.attendanceService
           .getAttendance(start, start + timeInDay, studentCode)
-          .pipe(map((result) => this.mapResult(result))),
+          .pipe(map((result) => this.mapResult(result, index))),
       ),
     );
   }
 
-  private mapResult(result: any): any {
+  private mapResult(result: any, suggested_dow: any = null): any {
     if (!result) throw new HttpException('No Result', 400);
 
     const DOW = [
@@ -50,9 +50,12 @@ export class AttendanceController {
     ];
 
     return {
-      day_of_week: !!result['check_in']
-        ? DOW[moment.unix(result['check_in']).day()]
-        : null,
+      day_of_week:
+        suggested_dow != null
+          ? DOW[suggested_dow]
+          : !!result['check_in']
+          ? DOW[moment.unix(result['check_in']).day()]
+          : null,
       date: !!result['check_in']
         ? moment.unix(result['check_in']).format('D-M-Y')
         : null,
