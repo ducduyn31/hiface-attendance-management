@@ -5,7 +5,9 @@ import { Queue } from 'bull';
 
 @Injectable()
 export class TaskService {
-  constructor(@InjectQueue('tasks') private taskQueue: Queue) {}
+  constructor(@InjectQueue('tasks') private taskQueue: Queue) {
+    this.synchronizeES();
+  }
 
   @Cron('0 0 * * * *')
   synchronizeES() {
